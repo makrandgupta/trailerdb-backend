@@ -14,7 +14,9 @@ function initialize(server, logger) {
 
 var routes = [
   'test',
-  'auth'
+  'auth',
+  'basic_crud',
+  'video'
 ];
 
 module.exports = function(server, logger) {

@@ -1,9 +1,9 @@
 var nJwt = require('njwt');
-var User = require(appRoot + '/models/user');
+var mongoose = require('mongoose');
+var User = mongoose.model('User');
 var signingKey = process.env.JWT_SECRET || 'SomeSecretKey';
 
 module.exports = function(server, logger) {
-  
   server.post('/login', function (req, res, next) {
     User.findOne({
       username: req.body.username
@@ -16,6 +16,7 @@ module.exports = function(server, logger) {
           success: false, 
           message: 'Auth failed: User not found' 
         });
+        return next();
       } 
 
       else if (user) {
@@ -34,14 +35,20 @@ module.exports = function(server, logger) {
             };
 
             var token = nJwt.create(payload, signingKey);
-            // return the information including token as JSON
             res.json({
               success: true,
               token: token.compact()
             });
+            return next();
           }
-          else 
-            res.send("no match");
+          else {
+            res.json({
+              success: false, 
+              message: 'Auth failed: Incorrect password' 
+            });
+            return next();
+          }
+
         });
         
       }
@@ -55,8 +62,6 @@ module.exports = function(server, logger) {
   server.post('/signup', function (req, res, next) {
     //check if username is taken
 
-    logger.debug(req.body);
-    
     User.findOne({
       username: req.body.username
     }, function(err, user) {
@@ -68,6 +73,7 @@ module.exports = function(server, logger) {
         res.json({ 
           success: false, message: 'Signup failed. Username is taken.' 
         });
+        return next();
       } 
 
       else if (!user) {
@@ -82,7 +88,10 @@ module.exports = function(server, logger) {
           if (err) throw err;
 
           logger.info('New user created: ' + req.body.username);
-          res.json({ success: true });
+          res.json({ 
+            success: true 
+          });
+          return next();
         });
 
       }

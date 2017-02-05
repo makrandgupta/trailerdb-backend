@@ -40,3 +40,8 @@ node_modules
 
 #dotenv
 .env
+
+#test_videos
+*.mp4 *.webm *.mov *.avi
+video/*
+!video/.gitkeep

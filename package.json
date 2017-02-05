@@ -14,15 +14,19 @@
     "bunyan": "^1.4.0",
     "config": "^1.14.0",
     "dotenv": "^4.0.0",
+    "fluent-ffmpeg": "^2.1.0",
     "forever": "^0.14.1",
     "fs": "0.0.1-security",
     "json5": "^0.4.0",
     "mongoose": "^4.8.1",
+    "mongoose-auto-increment": "^5.0.1",
     "mongoose-unique-validator": "^1.0.3",
     "njwt": "^0.4.0",
     "path": "^0.12.7",
     "restify": "^3.0.3",
-    "restify-jwt": "^0.4.0"
+    "restify-jwt": "^0.4.0",
+    "restify-mongoose": "^1.0.0",
+    "restify-namespace": "^0.1.1"
   },
   "devDependencies": {
     "mocha": "^2.2.5",
