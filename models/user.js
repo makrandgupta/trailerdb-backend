@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var bcrypt = require('bcrypt');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
@@ -16,10 +17,21 @@ var userSchema = new Schema({
 
 });
 
+userSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'user'
+});
+
+userSchema.virtual('ratings', {
+  ref: 'Rating',
+  localField: '_id',
+  foreignField: 'user'
+});
 
 
 // Saves the user's password hashed (plain text password storage is not good)
-UserSchema.pre('save', function (next) {  
+userSchema.pre('save', function (next) {  
   var user = this;
   if (this.isModified('password') || this.isNew) {
     bcrypt.genSalt(10, function (err, salt) {
@@ -40,7 +52,7 @@ UserSchema.pre('save', function (next) {
 });
 
 // Create method to compare password input to password saved in database
-UserSchema.methods.comparePassword = function(pw, cb) {  
+userSchema.methods.checkPassword = function(pw, cb) {  
   bcrypt.compare(pw, this.password, function(err, isMatch) {
     if (err) {
       return cb(err);

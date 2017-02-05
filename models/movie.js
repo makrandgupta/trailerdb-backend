@@ -4,7 +4,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var movieSchema = new Schema({
-  // movie_id: {type: String, required: true, index: true, unique: true},
   name: {
     type: String, 
     required: true
