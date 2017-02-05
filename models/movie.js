@@ -3,6 +3,15 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var schemaOptions = {
+  toObject: {
+    virtuals: true
+  },
+  toJSON: {
+    virtuals: true
+  }
+};
+
 var movieSchema = new Schema({
   name: {
     type: String, 
@@ -24,7 +33,7 @@ var movieSchema = new Schema({
     type : Schema.Types.ObjectId, 
     ref: 'Person'
   }]
-});
+}, schemaOptions);
 
 movieSchema.virtual('comments', {
   ref: 'Comment',

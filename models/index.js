@@ -2,17 +2,8 @@
    
 var fs   = require('fs'),
     path = require('path');
-    
-function initialize(server, logger) {
-  
-  server.get('/', function (req, res, next) {
-    res.send({ 'message': 'Restify is online and operational.' });      
-    return next();
-  });
-  
-};
 
-var routes = [
+var models = [
   'comment',
   'person',
   'movie',
@@ -21,13 +12,12 @@ var routes = [
 ];
 
 module.exports = function(server, logger) {
-  initialize(server, logger);
   
-  routes.forEach(function (route) {
+  models.forEach(function (model) {
     try {
-      require(path.join(__dirname, route));
+      require(path.join(__dirname, model));
     } catch (err) {
-      throw new Error("Can't load '" + route + "' route");
+      throw new Error("Can't load '" + model + "' model");
     }
   });
 };

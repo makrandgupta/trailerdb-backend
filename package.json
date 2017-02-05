@@ -20,6 +20,7 @@
     "json5": "^0.4.0",
     "mongoose": "^4.8.1",
     "mongoose-auto-increment": "^5.0.1",
+    "mongoose-populate-virtuals": "^1.0.3",
     "mongoose-unique-validator": "^1.0.3",
     "njwt": "^0.4.0",
     "path": "^0.12.7",

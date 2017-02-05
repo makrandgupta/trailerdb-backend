@@ -4,6 +4,15 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 var Schema = mongoose.Schema;
 
+var schemaOptions = {
+  toObject: {
+    virtuals: true
+  },
+  toJSON: {
+    virtuals: true
+  }
+};
+
 var userSchema = new Schema({
 
   username: {
@@ -29,7 +38,7 @@ userSchema.virtual('ratings', {
   ref: 'Rating',
   localField: '_id',
   foreignField: 'user'
-});
+}, schemaOptions);
 
 userSchema.pre('save', function (next) {  
   var user = this;
