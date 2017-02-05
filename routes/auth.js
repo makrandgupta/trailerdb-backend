@@ -1,8 +1,10 @@
+var nJwt = require('njwt');
+var User = require(appRoot + '/models/user');
+var signingKey = process.env.JWT_SECRET || 'SomeSecretKey';
+
 module.exports = function(server, logger) {
   
-  // Sample route
-  server.get('/login', function (req, res, next) {
-  	// find the user
+  server.post('/login', function (req, res, next) {
     User.findOne({
       username: req.body.username
     }, function(err, user) {
@@ -11,39 +13,82 @@ module.exports = function(server, logger) {
 
       if (!user) {
         res.json({ 
-          success: false, message: 'Auth failed. User not found.' 
+          success: false, 
+          message: 'Auth failed: User not found' 
         });
       } 
 
       else if (user) {
 
-        // check if password matches
-        if (user.password != req.body.password) {
-          res.json({ 
-            success: false, message: 'Auth failed. Wrong password.' 
-          });
-        } else {
+        user.checkPassword(req.body.password, function (err, match) {
+          if(err) throw err;
 
-          // if user is found and password is right
-          // create a token
-          var token = jwt.sign(user, app.get('superSecret'), {
-            expiresInMinutes: 1440 // expires in 24 hours
-          });
+          if(match){
 
-          // return the information including token as JSON
-          res.json({
-            success: true,
-            message: 'Enjoy your token!',
-            token: token
-          });
-        }   
+            // create a token
+            var payload = {
+              iss: "TrailerDb",
+              type: "user",
+              preferred_username: user.username,
+              scope: "view, rate, comment"
+            };
 
+            var token = nJwt.create(payload, signingKey);
+            // return the information including token as JSON
+            res.json({
+              success: true,
+              token: token.compact()
+            });
+          }
+          else 
+            res.send("no match");
+        });
+        
       }
 
     });
 
-    res.send({ 'result': 'test' });      
-    return next();
+  });
+
+  // for now, to log out a user, simply delete jwt from frontend
+
+  server.post('/signup', function (req, res, next) {
+    //check if username is taken
+
+    logger.debug(req.body);
+    
+    User.findOne({
+      username: req.body.username
+    }, function(err, user) {
+
+    logger.debug("Signup endpoint hit");
+      if (err) throw err;
+
+      if (user) {
+        res.json({ 
+          success: false, message: 'Signup failed. Username is taken.' 
+        });
+      } 
+
+      else if (!user) {
+
+
+        var new_user = new User({ 
+          username: req.body.username, 
+          password: req.body.password, 
+        });
+
+        new_user.save(function(err) {
+          if (err) throw err;
+
+          logger.info('New user created: ' + req.body.username);
+          res.json({ success: true });
+        });
+
+      }
+
+    });
+ 
   });
   
 };

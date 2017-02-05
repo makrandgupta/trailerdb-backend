@@ -13,7 +13,8 @@ function initialize(server, logger) {
 };
 
 var routes = [
-  'test'
+  'test',
+  'auth'
 ];
 
 module.exports = function(server, logger) {
