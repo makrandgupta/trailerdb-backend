@@ -10,6 +10,9 @@ var path    = require('path'),
 
 exports.createServer = createServer;
 
+/*Set appRoot*/
+global.appRoot = path.resolve(__dirname);
+
 /*
  * Set up server
  * @return the created server
@@ -28,6 +31,14 @@ function createServer (logger) {
 
   server.use(restify.acceptParser(server.acceptable));
   server.use(restify.queryParser());
+  server.use(restify.bodyParser({
+    mapParams: true,
+    mapFiles: false,
+    overrideParams: false,
+    keepExtensions: true,
+    multiples: true
+ }));
+
 
   server.on('NotFound', function (req, res, next) {
     if (logger) {
@@ -39,6 +50,6 @@ function createServer (logger) {
   if (logger) server.on('after', restify.auditLogger({ log: logger }));
   
   routes(server, logger);
-  
+
   return server;
 }
