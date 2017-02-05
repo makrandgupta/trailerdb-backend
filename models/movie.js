@@ -6,7 +6,15 @@ var Schema = mongoose.Schema;
 var movieSchema = new Schema({
   name: {
     type: String, 
-    required: true
+    required: true,
+    unique: true,
+    dropDups: true
+  },
+  description: {
+    type: String
+  },
+  trailer:{
+    type: String
   },
   director: {
     type: Schema.Types.ObjectId, 

@@ -26,5 +26,4 @@ var ratingSchema = new Schema({
 });
 
 ratingSchema.set('timestamps', true); // include timestamps in docs
-
 module.exports = mongoose.model('Rating', ratingSchema);

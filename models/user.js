@@ -1,19 +1,21 @@
+'use strict';
+
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
 
-    username: {
-      type: String,
-      lowercase: true,
-      unique: true,
-      required: true
-    },
-    password: {
-      type: String, 
-      required: true
-    }
+  username: {
+    type: String,
+    lowercase: true,
+    unique: true,
+    required: true
+  },
+  password: {
+    type: String, 
+    required: true
+  }
 
 });
 
@@ -29,8 +31,6 @@ userSchema.virtual('ratings', {
   foreignField: 'user'
 });
 
-
-// Saves the user's password hashed (plain text password storage is not good)
 userSchema.pre('save', function (next) {  
   var user = this;
   if (this.isModified('password') || this.isNew) {
@@ -51,7 +51,6 @@ userSchema.pre('save', function (next) {
   }
 });
 
-// Create method to compare password input to password saved in database
 userSchema.methods.checkPassword = function(pw, cb) {  
   bcrypt.compare(pw, this.password, function(err, isMatch) {
     if (err) {
@@ -60,6 +59,5 @@ userSchema.methods.checkPassword = function(pw, cb) {
     cb(null, isMatch);
   });
 };
-
 
 module.exports = mongoose.model('User', userSchema);

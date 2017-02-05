@@ -5,6 +5,7 @@
 var path    = require('path'),
     restify = require('restify'),
     config  = require('config'),
+    models  = require('./models'),
     routes  = require('./routes');
 
 
@@ -49,6 +50,7 @@ function createServer (logger) {
   
   if (logger) server.on('after', restify.auditLogger({ log: logger }));
   
+  models(server, logger);
   routes(server, logger);
 
   return server;
