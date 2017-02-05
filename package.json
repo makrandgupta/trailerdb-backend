@@ -1,0 +1,35 @@
+{
+  "name": "trailer-db",
+  "version": "0.0.0",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "./node_modules/.bin/forever start --append -o ./forever.log -e ./forever.log server.js",
+    "stop": "./node_modules/.bin/forever stop server.js",
+    "status": "./node_modules/.bin/forever list",
+    "test": "./node_modules/.bin/mocha -R spec test/server.js test/**/*.js"
+  },
+  "dependencies": {
+    "bunyan": "^1.4.0",
+    "config": "^1.14.0",
+    "dotenv": "^4.0.0",
+    "forever": "^0.14.1",
+    "fs": "0.0.1-security",
+    "json5": "^0.4.0",
+    "mongoose": "^4.8.1",
+    "mongoose-unique-validator": "^1.0.3",
+    "njwt": "^0.4.0",
+    "path": "^0.12.7",
+    "restify": "^3.0.3",
+    "restify-jwt": "^0.4.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "chai": "^3.0.0",
+    "supertest": "^1.0.1",
+    "bunyan-prettystream": "hadfieldn/node-bunyan-prettystream"
+  },
+  "engine": {
+    "node": ">=0.10"
+  }
+}
