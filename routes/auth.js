@@ -4,7 +4,7 @@ var User = mongoose.model('User');
 var signingKey = process.env.JWT_SECRET || 'SomeSecretKey';
 
 module.exports = function(server, logger) {
-  server.post('/login', function (req, res, next) {
+  server.post('/auth/login', function (req, res, next) {
     User.findOne({
       username: req.body.username
     }, function(err, user) {
@@ -59,7 +59,7 @@ module.exports = function(server, logger) {
 
   // for now, to log out a user, simply delete jwt from frontend
 
-  server.post('/signup', function (req, res, next) {
+  server.post('/auth/signup', function (req, res, next) {
     //check if username is taken
 
     User.findOne({
