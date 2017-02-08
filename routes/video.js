@@ -4,27 +4,34 @@ var jwt = require('restify-jwt');
 var ffmpeg = require('fluent-ffmpeg');
 
 module.exports = function(server, logger) {
-  server.get('/video/:filename', jwt({secret: process.env.JWT_SECRET}), function (req, res, next) {
-    res.setHeader('content-type', 'video/mp4');
-    var pathToMovie = appRoot + '/video/' + req.params.filename;
-    var proc = ffmpeg(pathToMovie)
-      .videoBitrate('2000k')
-      .videoCodec('libx264')
-      .audioBitrate('128k')
-      .audioCodec('aac')
-      .audioChannels(2)
-      .addOption('-preset', 'veryfast')
-      .addOption('-maxrate', '2000k')
-      .addOption('-bufsize', '6000k')
-      .outputOptions('-movflags frag_keyframe+empty_moov')
-      .format('mp4')
-      .on('end', function() {
-        console.log('file has been converted succesfully');
-      })
-      .on('error', function(err) {
-        console.log('an error happened: ' + err.message);
-      })
-      .pipe(res, {end:true});
+  server.get('/video/:filename',  function (req, res, next) {
+    var input = appRoot + '/video/' + req.params.filename;
+    ffmpeg.ffprobe(input, function(err, metadata) {
+      console.log(metadata);
+      res.writeHead(200, {
+          'Content-Type': 'video/webm',
+          'Content-Length': metadata.format.size
+      });
+      var proc = ffmpeg(input)
+        .videoCodec('libvpx')
+        .audioCodec('libvorbis')
+        .size('1920x1080')
+        .videoBitrate('3000k')
+        .outputOptions([
+          '-deadline realtime',
+          '-preset ultrafast'
+        ])
+        .format('webm')
+        .on('error', function(err,stdout,stderr) {
+            console.log('an error happened: ' + err.message);
+            console.log('ffmpeg stdout: ' + stdout);
+            console.log('ffmpeg stderr: ' + stderr);
+        })
+        .on('end', function() {
+            console.log('Processing finished !');
+        })
+        .pipe(res, { end: true });
+    });
   });
   
 };
