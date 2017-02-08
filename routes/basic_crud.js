@@ -1,7 +1,5 @@
-var namespace = require('restify-namespace');
-var restifyMongoose = require('restify-mongoose');
-var jwt = require('restify-jwt');
 var mongoose = require('mongoose');
+var restifyMongoose = require('restify-mongoose');
 
 var Movie = mongoose.model('Movie');
 var movies = restifyMongoose(Movie);
@@ -19,34 +17,34 @@ var Person = mongoose.model('Person');
 var persons = restifyMongoose(Person);
 
 module.exports = function(server, logger) {
-    server.get('/movie/list', jwt({secret: process.env.JWT_SECRET}), movies.query({populate: 'director,actors,comments,ratings'}));
-    server.get('/movie/:id', jwt({secret: process.env.JWT_SECRET}), movies.detail({populate: 'director,actors,comments,ratings'}));
-    server.post('/movie', jwt({secret: process.env.JWT_SECRET}), movies.insert());
-    server.patch('/movie/:id', jwt({secret: process.env.JWT_SECRET}), movies.update());
-    server.del('/movie/:id', jwt({secret: process.env.JWT_SECRET}), movies.remove()); 
+    server.get('/movie/list', movies.query({populate: 'director,actors,comments,ratings'}));
+    server.get('/movie/:id', movies.detail({populate: 'director,actors,comments,ratings'}));
+    server.post('/movie', movies.insert());
+    server.patch('/movie/:id', movies.update());
+    server.del('/movie/:id', movies.remove()); 
 
-    server.get('/user/list', jwt({secret: process.env.JWT_SECRET}), users.query({populate: 'comments,ratings'}));
-    server.get('/user/:id', jwt({secret: process.env.JWT_SECRET}), users.detail({populate: 'comments,ratings'}));
-    server.post('/user', jwt({secret: process.env.JWT_SECRET}), users.insert());
-    server.patch('/user/:id', jwt({secret: process.env.JWT_SECRET}), users.update());
-    server.del('/user/:id', jwt({secret: process.env.JWT_SECRET}), users.remove()); 
+    server.get('/user/list', users.query({populate: 'comments,ratings'}));
+    server.get('/user/:id', users.detail({populate: 'comments,ratings'}));
+    server.post('/user', users.insert());
+    server.patch('/user/:id', users.update());
+    server.del('/user/:id', users.remove()); 
 
-    server.get('/comment/list', jwt({secret: process.env.JWT_SECRET}), comments.query({populate: 'movie,user'}));
-    server.get('/comment/:id', jwt({secret: process.env.JWT_SECRET}), comments.detail({populate: 'movie,user'}));
-    server.post('/comment', jwt({secret: process.env.JWT_SECRET}), comments.insert());
-    server.patch('/comment/:id', jwt({secret: process.env.JWT_SECRET}), comments.update());
-    server.del('/comment/:id', jwt({secret: process.env.JWT_SECRET}), comments.remove()); 
+    server.get('/comment/list', comments.query({populate: 'movie,user'}));
+    server.get('/comment/:id', comments.detail({populate: 'movie,user'}));
+    server.post('/comment', comments.insert());
+    server.patch('/comment/:id', comments.update());
+    server.del('/comment/:id', comments.remove()); 
 
-    server.get('/rating/list', jwt({secret: process.env.JWT_SECRET}), ratings.query({populate: 'movie,user'}));
-    server.get('/rating/:id', jwt({secret: process.env.JWT_SECRET}), ratings.detail({populate: 'movie,user'}));
-    server.post('/rating', jwt({secret: process.env.JWT_SECRET}), ratings.insert());
-    server.patch('/rating/:id', jwt({secret: process.env.JWT_SECRET}), ratings.update());
-    server.del('/rating/:id', jwt({secret: process.env.JWT_SECRET}), ratings.remove()); 
+    server.get('/rating/list', ratings.query({populate: 'movie,user'}));
+    server.get('/rating/:id', ratings.detail({populate: 'movie,user'}));
+    server.post('/rating', ratings.insert());
+    server.patch('/rating/:id', ratings.update());
+    server.del('/rating/:id', ratings.remove()); 
 
-    server.get('/person/list', jwt({secret: process.env.JWT_SECRET}), persons.query({populate: 'director,actors,comments,persons'}));
-    server.get('/person/:id', jwt({secret: process.env.JWT_SECRET}), persons.detail({populate: 'director,actors,comments,persons'}));
-    server.post('/person', jwt({secret: process.env.JWT_SECRET}), persons.insert());
-    server.patch('/person/:id', jwt({secret: process.env.JWT_SECRET}), persons.update());
-    server.del('/person/:id', jwt({secret: process.env.JWT_SECRET}), persons.remove()); 
+    server.get('/person/list', persons.query({populate: 'director,actors,comments,persons'}));
+    server.get('/person/:id', persons.detail({populate: 'director,actors,comments,persons'}));
+    server.post('/person', persons.insert());
+    server.patch('/person/:id', persons.update());
+    server.del('/person/:id', persons.remove()); 
 
 };
