@@ -4,6 +4,32 @@ var User = mongoose.model('User');
 var signingKey = process.env.JWT_SECRET || 'SomeSecretKey';
 
 module.exports = function(server, logger) {
+  server.get('/auth/account', function (req, res, next) {
+
+    User.findOne({
+      username: req.user.preferred_username
+    }, function (err, user) {
+      if(err) throw err;
+
+      if(!user){
+        res.json({
+          success: false,
+          message: "User not found"
+        });
+        next();
+      } else {
+        res.json({
+          success: true,
+          data: {
+            username: user.username,
+            email: user.email
+          }
+        });
+        next();
+      }
+    });
+  });
+
   server.post('/auth/login', function (req, res, next) {
     User.findOne({
       username: req.body.username

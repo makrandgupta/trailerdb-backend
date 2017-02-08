@@ -44,6 +44,8 @@ function createServer (logger) {
   var unprotected_endpoints = {
     path: [
       '/',
+      '/auth/login',
+      '/auth/signup',
       /\/video/i
     ]
   }
