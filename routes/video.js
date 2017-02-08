@@ -8,6 +8,10 @@ module.exports = function(server, logger) {
     var input = appRoot + '/video/' + req.params.filename;
     ffmpeg.ffprobe(input, function(err, metadata) {
       console.log(metadata);
+      if(!metadata){
+        res.json(404, {error: 'Video not found'});
+        next();
+      }
       res.writeHead(200, {
           'Content-Type': 'video/webm',
           'Content-Length': metadata.format.size
