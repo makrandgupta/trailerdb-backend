@@ -4,6 +4,7 @@
 
 var path    = require('path'),
     restify = require('restify'),
+    jwt = require('restify-jwt'),
     config  = require('config'),
     models  = require('./models'),
     routes  = require('./routes');
@@ -38,7 +39,15 @@ function createServer (logger) {
     overrideParams: false,
     keepExtensions: true,
     multiples: true
- }));
+  }));
+
+  var unprotected_endpoints = {
+    path: [
+      '/',
+      /\/video/i
+    ]
+  }
+  server.use(jwt({secret: process.env.JWT_SECRET}).unless(unprotected_endpoints));
 
 
   server.on('NotFound', function (req, res, next) {
