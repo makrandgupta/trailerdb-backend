@@ -19,7 +19,7 @@ var persons = restifyMongoose(Person);
 module.exports = function(server, logger) {
     server.get('/movie/list', movies.query({populate: 'director,actors,comments,ratings'}));
     server.get('/movie/:id', movies.detail({populate: 'director,actors,comments,ratings'}));
-    server.post('/movie', movies.insert());
+    server.post('/movie', movies.insert()); // TODO Does not accept array as input
     server.patch('/movie/:id', movies.update());
     server.del('/movie/:id', movies.remove()); 
 

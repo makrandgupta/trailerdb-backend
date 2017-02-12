@@ -31,7 +31,6 @@ function createServer (logger) {
 
   var server = restify.createServer(settings);
   
-  // restify.CORS.ALLOW_HEADERS.push('authorization');
   server.use(restify.acceptParser(server.acceptable));
   server.use(restify.queryParser());
   server.use(restify.CORS({
@@ -60,12 +59,8 @@ function createServer (logger) {
 
   // Manually implement the method not allowed handler to fix failing preflights
   //
-  server.on( "MethodNotAllowed", function( request, response )
-  {
-      if ( request.method.toUpperCase() === "OPTIONS" )
-      {
-          // Send the CORS headers
-          //
+  server.on( "MethodNotAllowed", function( request, response ) {
+      if ( request.method.toUpperCase() === "OPTIONS" ) {
           response.header( "Access-Control-Allow-Credentials", true                                    );
           response.header( "Access-Control-Allow-Headers",     restify.CORS.ALLOW_HEADERS.join( ", " ) );
           response.header( "Access-Control-Allow-Methods",     "GET, POST, PUT, DELETE, OPTIONS"       );
@@ -73,30 +68,24 @@ function createServer (logger) {
           response.header( "Access-Control-Max-Age",           0                                       );
           response.header( "Content-type",                     "text/plain charset=UTF-8"              );
           response.header( "Content-length",                   0                                       );
-
           response.send( 204 );
       }
-      else
-      {
+      else {
           response.send( new restify.MethodNotAllowedError() );
       }
-  } );
-  server.use(restify.bodyParser({
-    mapParams: true,
-    mapFiles: false,
-    overrideParams: false,
-    keepExtensions: true,
-    multiples: true
-  }));
+  });
+
+  server.use(restify.urlEncodedBodyParser({ mapParams : false }));
 
   var unprotected_endpoints = {
     path: [
       '/',
       '/auth/login',
       '/auth/signup',
-      /\/video/i
+      // /\/video/i
     ]
-  }
+  };
+
   server.use(jwt({secret: process.env.JWT_SECRET}).unless(unprotected_endpoints));
 
 

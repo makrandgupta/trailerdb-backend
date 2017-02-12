@@ -25,6 +25,9 @@ var movieSchema = new Schema({
   trailer:{
     type: String
   },
+  thumbnail: {
+    type: String
+  },
   director: {
     type: Schema.Types.ObjectId, 
     ref: 'Person'
