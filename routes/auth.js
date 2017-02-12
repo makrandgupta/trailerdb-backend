@@ -1,7 +1,9 @@
+var restify = require('restify');
 var nJwt = require('njwt');
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var signingKey = process.env.JWT_SECRET || 'SomeSecretKey';
+
 
 module.exports = function(server, logger) {
   server.get('/auth/account', function (req, res, next) {
@@ -12,17 +14,20 @@ module.exports = function(server, logger) {
       if(err) throw err;
 
       if(!user){
-        res.json({
-          success: false,
-          message: "User not found"
-        });
-        next();
+        return next(new restify.NotAuthorizedError("User not found"));
       } else {
+        delete user.password;
+        console.log(user);
         res.json({
           success: true,
           data: {
-            username: user.username,
-            email: user.email
+            user: {
+              id: user._id,
+              username: user.username,
+              firstname: user.firstname,
+              lastname: user.lastname,
+              email: user.email
+            }
           }
         });
         next();
@@ -38,11 +43,7 @@ module.exports = function(server, logger) {
       if (err) throw err;
 
       if (!user) {
-        res.json({ 
-          success: false, 
-          message: 'Auth failed: User not found' 
-        });
-        return next();
+        return next(new restify.NotAuthorizedError("User not found"));
       } 
 
       else if (user) {
@@ -61,6 +62,7 @@ module.exports = function(server, logger) {
             };
 
             var token = nJwt.create(payload, signingKey);
+            token.setExpiration(new Date().getTime() + (24*60*60*1000)); // 24 hours from issue time
             res.json({
               success: true,
               token: token.compact()
@@ -68,11 +70,7 @@ module.exports = function(server, logger) {
             return next();
           }
           else {
-            res.json({
-              success: false, 
-              message: 'Auth failed: Incorrect password' 
-            });
-            return next();
+            return next(new restify.NotAuthorizedError("Incorrect Password"));
           }
 
         });
@@ -108,6 +106,9 @@ module.exports = function(server, logger) {
         var new_user = new User({ 
           username: req.body.username, 
           password: req.body.password, 
+          email: req.body.email, 
+          firstname: req.body.firstname, 
+          lastname: req.body.lastname
         });
 
         new_user.save(function(err) {
