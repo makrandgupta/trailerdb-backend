@@ -19,4 +19,4 @@ If running in production, make sure to set those config/env vars
 
 Running `npm start` will start the server using [forever](
 https://github.com/nodejitsu/forever), and running `npm stop` will stop it.
-`npm run-script list` will list the forever processes that are running.
+`npm run status` will list the forever processes that are running.
